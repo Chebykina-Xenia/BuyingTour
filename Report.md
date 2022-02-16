@@ -18,7 +18,7 @@
 
 **Ожидаемый резудьтат:** Выводится сообщение: «Успешно! Операция одобрена банком.» Данные заносятся в таблицу order_entity и payment_entity. Данные в таблице payment_entity: amount = 45 000 руб, created = sysdate, status = APPROVED. Данные в таблице order_entity: created = sysdate. 
 
-**Фактический резудьтат:** Выводится сообщение: «Успешно! Операция одобрена банком.» Данные заносятся в таблицу order_entity и payment_entity. Данные в таблице payment_entity: amount = 4500000 руб, created не равна sysdate, status = APPROVED. Данные в таблице order_entity: created не равна sysdate. 
+**Фактический резудьтат:** Выводится сообщение: «Успешно! Операция одобрена банком.» Данные заносятся в таблицу order_entity и payment_entity. Данные в таблице payment_entity: amount = 4 500 000 руб, created не равна sysdate, status = APPROVED. Данные в таблице order_entity: created не равна sysdate. 
 
 
 2. Отправка заполненной формы. Платёж не одобрен. 
