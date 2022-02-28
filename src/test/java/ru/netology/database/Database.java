@@ -33,21 +33,41 @@ public class Database {
     @SneakyThrows
     //получаем статус (одобрен или не одобрен)
     public static String getAmount() {
-        String dataSQLStatus = "SELECT amount FROM payment_entity WHERE true;";
+        String dataSQLAmount = "SELECT amount FROM payment_entity WHERE true;";
         String amount = null;
         try (
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
                 //создаём консоль, через которую будем создавать запрос к БД
-                PreparedStatement amountStatment = connection.prepareStatement(dataSQLStatus);
+                PreparedStatement amountStatment = connection.prepareStatement(dataSQLAmount);
         ) {
             try (ResultSet rs = amountStatment.executeQuery()) {
                 if (rs.next()) {  //определяем есть ли следующая строка в возвращённом из селекта результате
-                    amount = rs.getString("status");  //сохраняем полученный статус
+                    amount = rs.getString("amount");
                 }
             }
         }
         return amount;
     }
+
+    @SneakyThrows
+    //проверяем, есть ли запись в табл order_entity
+    public static String getCountOrderEntity() {
+        String dataSQLCount = "SELECT count(oe.id) as count FROM order_entity oe, payment_entity pe WHERE oe.payment_id = pe.transaction_id;";
+        String countEntry = null;
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+                //создаём консоль, через которую будем создавать запрос к БД
+                PreparedStatement countStatment = connection.prepareStatement(dataSQLCount);
+        ) {
+            try (ResultSet rs = countStatment.executeQuery()) {
+                if (rs.next()) {  //определяем есть ли следующая строка в возвращённом из селекта результате
+                    countEntry = rs.getString("count");
+                }
+            }
+        }
+        return countEntry;
+    }
+
 
     @SneakyThrows
     //очищаем БД

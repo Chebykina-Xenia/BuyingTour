@@ -81,7 +81,7 @@ public class DataHelper {
             sysdate = year;
         }
 
-        if (ofPattern == "MM"){
+        if (ofPattern == "MM") {
             sysdate = month;
         }
         return sysdate;

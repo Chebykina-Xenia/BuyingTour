@@ -2,14 +2,13 @@ package ru.netology.test;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 import ru.netology.data.DataHelper;
 import ru.netology.database.Database;
 
 import java.time.Duration;
-import java.util.Calendar;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.*;
@@ -17,6 +16,19 @@ import static com.codeborne.selenide.Selenide.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuyingTourTest {
+
+    //подключаем ALLURE
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
+    }
+
+
     @BeforeEach
     public void setUp() {
         //открываем сайт
@@ -150,6 +162,31 @@ public class BuyingTourTest {
         var amountSQL = Database.getAmount();
         //сравниваем фактический и ожидаемый результат
         assertEquals("45000", amountSQL);
+        //очищаем таблицы
+        Database.cleanDatabase();
+    }
+
+    //Передача данных в БД — проверяем есть ли запись в табл order_entity
+    //тест пройдёт успешно
+    @Test
+    void countEntryOrderEntityApproved() {
+        //заполняем поле Номер карты
+        numberCards.setValue(DataHelper.getCardNumberApproved());
+        //заполняем поле месяц
+        month.setValue(DataHelper.generateMonth());
+        //заполняем поле год
+        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
+        //заполняем поле владелец
+        cardOwner.setValue(DataHelper.generateCardowner("en"));
+        //заполняем поле cvc
+        cvc.setValue(DataHelper.generateCvc("en"));
+        //кликаем по кнопке продолжить
+        button.click();
+
+        $("[class='notification__title']").shouldHave(exactText("Успешно"), Duration.ofSeconds(30));
+        var countSQL = Database.getCountOrderEntity();
+        //сравниваем фактический и ожидаемый результат
+        assertEquals("1", countSQL);
         //очищаем таблицы
         Database.cleanDatabase();
     }
