@@ -2,9 +2,11 @@ package ru.netology.test;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataHelper;
+import ru.netology.database.Database;
 
 import java.time.Duration;
 import java.util.Calendar;
@@ -102,6 +104,78 @@ public class BuyingTourTest {
         messageBelows.get(4).shouldHave(exactText("Неверный формат"));
     }
 
-    //ВЗАИМОДЕЙСТВИЕ С БД — Отправка данных в БД
+    //Передача данных в БД — проверка передачи статуса одобрено
+    //тест проходит успешно
+    @Test
+    void transferringStatusDatabaseApproved() {
+        //заполняем поле Номер карты
+        numberCards.setValue(DataHelper.getCardNumberApproved());
+        //заполняем поле месяц
+        month.setValue(DataHelper.generateMonth());
+        //заполняем поле год
+        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
+        //заполняем поле владелец
+        cardOwner.setValue(DataHelper.generateCardowner("en"));
+        //заполняем поле cvc
+        cvc.setValue(DataHelper.generateCvc("en"));
+        //кликаем по кнопке продолжить
+        button.click();
 
+        $("[class='notification__title']").shouldHave(exactText("Успешно"), Duration.ofSeconds(30));
+        var statusSQL = Database.getStatus();
+        //сравниваем фактический и ожидаемый результат
+        assertEquals("APPROVED", statusSQL);
+        //очищаем таблицы
+        Database.cleanDatabase();
+    }
+
+    //Передача данных в БД — проверка передачи суммы
+    //тест падает, т.к. передаётся неправильная сумма
+    @Test
+    void transferringAmountDatabaseApproved() {
+        //заполняем поле Номер карты
+        numberCards.setValue(DataHelper.getCardNumberApproved());
+        //заполняем поле месяц
+        month.setValue(DataHelper.generateMonth());
+        //заполняем поле год
+        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
+        //заполняем поле владелец
+        cardOwner.setValue(DataHelper.generateCardowner("en"));
+        //заполняем поле cvc
+        cvc.setValue(DataHelper.generateCvc("en"));
+        //кликаем по кнопке продолжить
+        button.click();
+
+        $("[class='notification__title']").shouldHave(exactText("Успешно"), Duration.ofSeconds(30));
+        var amountSQL = Database.getAmount();
+        //сравниваем фактический и ожидаемый результат
+        assertEquals("45000", amountSQL);
+        //очищаем таблицы
+        Database.cleanDatabase();
+    }
+
+    //Передача данных в БД — проверка передачи статуса НЕ одобрено
+    //тест падает, т.к. баг - сообщение выдаёт успех, а не ошибка
+    @Test
+    void transferringStatusDatabaseDeclined() {
+        //заполняем поле Номер карты
+        numberCards.setValue(DataHelper.getCardNumberDeclined());
+        //заполняем поле месяц
+        month.setValue(DataHelper.generateMonth());
+        //заполняем поле год
+        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
+        //заполняем поле владелец
+        cardOwner.setValue(DataHelper.generateCardowner("en"));
+        //заполняем поле cvc
+        cvc.setValue(DataHelper.generateCvc("en"));
+        //кликаем по кнопке продолжить
+        button.click();
+
+        $("[class='notification__title']").shouldHave(exactText("Ошибка"), Duration.ofSeconds(30));
+        var statusSQL = Database.getStatus();
+        //сравниваем фактический и ожидаемый результат
+        assertEquals("DECLINED", statusSQL);
+        //очищаем таблицы
+        Database.cleanDatabase();
+    }
 }
