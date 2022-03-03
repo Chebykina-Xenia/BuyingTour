@@ -1,6 +1,5 @@
 package ru.netology.test;
 
-import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterAll;
@@ -8,10 +7,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataHelper;
+import ru.netology.database.Database;
+import ru.netology.page.CardPaymentPage;
+import ru.netology.page.MainPage;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,91 +29,60 @@ public class InvalidCardOwner {
 
     @BeforeEach
     public void setUp() {
+        //очищаем таблицы БД
+        Database.cleanDatabase();
         //открываем сайт
         open("http://localhost:8080/");
         //кликаем по кнопке КУПИТЬ
-        $(byText("Купить")).click();
+        var mainPage = new MainPage();
+        mainPage.openCardPaymentPage();
     }
-
-    //находим поле Номер карты
-    private SelenideElement numberCards = $("[class='input__control'][placeholder='0000 0000 0000 0000']");
-    //находим Месяц
-    private SelenideElement month = $("[class='input__control'][placeholder='08']");
-    //находим поле Год
-    private SelenideElement year = $("[class='input__control'][placeholder='22']");
-    //находим поле Владелец
-    private SelenideElement cardOwner = $(byText("Владелец")).parent().$("input");
-    //находим поле CVC/CVV
-    private SelenideElement cvc = $("[class='input__control'][placeholder='999']");
-    //находим кнопку продолжить
-    private SelenideElement button = $(byText("Продолжить"));
-    //сообщение об ошибке под полем
-    private SelenideElement messageBelow = $("span.input__top~.input__sub");
 
     //оставляем поле пустым
     //тест успешно проходит
     @Test
-    void sendingInvalidCardOwnerEmpty() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cvc.setValue(DataHelper.generateCvc("en"));
-        button.click();
-
-        messageBelow.shouldHave(exactText("Поле обязательно для заполнения"));
+    void sendingInvalidCardOwnerEmptyTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 4, null);
+        cardPaymentPage.clicButton();
+        cardPaymentPage.messageUnderField("Поле обязательно для заполнения");
     }
 
     //вводи в поле одну букву на латинице
     //тест падает, т.к. баг
     @Test
-    void sendingInvalidCardOwner1() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue("G");
-        cvc.setValue(DataHelper.generateCvc("en"));
-        button.click();
-
-        messageBelow.shouldHave(exactText("Диапазон значения в поле должен быть от 2 до 40 букв"));
+    void sendingInvalidCardOwner1Test() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 5, DataHelper.generateStringEN(1));
+        cardPaymentPage.clicButton();
+        cardPaymentPage.messageUnderField("Диапазон значения в поле должен быть от 2 до 40 букв");
     }
 
     //вводи в поле 41 букву на латинице
     //тест падает, т.к. баг
     @Test
-    void sendingInvalidCardOwner41() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue("TestsTestsTestsTestsTestsTestsTestsTestsT");
-        cvc.setValue(DataHelper.generateCvc("en"));
-        button.click();
-
-        messageBelow.shouldHave(exactText("Диапазон значения в поле должен быть от 2 до 40 букв"));
+    void sendingInvalidCardOwner41Test() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 5, DataHelper.generateStringEN(41));
+        cardPaymentPage.clicButton();
+        cardPaymentPage.messageUnderField("Диапазон значения в поле должен быть от 2 до 40 букв");
     }
 
     //вводим русский буквы
     //тест не проходит, т.к. баг
     @Test
-    void sendingInvalidCardOwnerRU() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue("Иван");
-        cvc.setValue(DataHelper.generateCvc("en"));
-
-        assertEquals("", cardOwner.getValue());
+    void sendingInvalidCardOwnerRUTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 4, DataHelper.generateRU());
+        assertEquals("", cardPaymentPage.getValueFild(3));
     }
 
-    //вводим символы
+    //вводим цифры
     //тест не проходит, т.к. баг
     @Test
-    void sendingInvalidCardOwnerSymbol() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue("%^&");
-        cvc.setValue(DataHelper.generateCvc("en"));
-
-        assertEquals("", cardOwner.getValue());
+    void sendingInvalidCardOwnerNumberTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 4, DataHelper.generateNumber(5));
+        assertEquals("", cardPaymentPage.getValueFild(3));
     }
 }

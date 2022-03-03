@@ -1,6 +1,5 @@
 package ru.netology.test;
 
-import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterAll;
@@ -8,10 +7,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataHelper;
+import ru.netology.database.Database;
+import ru.netology.page.CardPaymentPage;
+import ru.netology.page.MainPage;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,118 +29,82 @@ public class InvalidCVCTest {
 
     @BeforeEach
     public void setUp() {
+        //очищаем таблицы БД
+        Database.cleanDatabase();
         //открываем сайт
         open("http://localhost:8080/");
         //кликаем по кнопке КУПИТЬ
-        $(byText("Купить")).click();
+        var mainPage = new MainPage();
+        mainPage.openCardPaymentPage();
     }
-
-    //находим поле Номер карты
-    private SelenideElement numberCards = $("[class='input__control'][placeholder='0000 0000 0000 0000']");
-    //находим Месяц
-    private SelenideElement month = $("[class='input__control'][placeholder='08']");
-    //находим поле Год
-    private SelenideElement year = $("[class='input__control'][placeholder='22']");
-    //находим поле Владелец
-    private SelenideElement cardOwner = $(byText("Владелец")).parent().$("input");
-    //находим поле CVC/CVV
-    private SelenideElement cvc = $("[class='input__control'][placeholder='999']");
-    //находим кнопку продолжить
-    private SelenideElement button = $(byText("Продолжить"));
-    //сообщение об ошибке под полем
-    private SelenideElement messageBelow = $("span.input__top~.input__sub");
 
     //оставляем поле пустым
     //тест не проходит, т.к. баг
     @Test
-    void sendingInvalidCVCEmpty() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        button.click();
-
-        messageBelow.shouldHave(exactText("Неверный формат"));
+    void sendingInvalidCVCEmptyTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, null);
+        cardPaymentPage.clicButton();
+        cardPaymentPage.messageUnderField("Неверный формат");
     }
 
     //вводим одно число
     //тест успешно проходит
     @Test
-    void sendingInvalidCVC1Number() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        cvc.setValue("3");
-        button.click();
-
-        messageBelow.shouldHave(exactText("Неверный формат"));
+    void sendingInvalidCVC1NumberTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateNumber(1));
+        cardPaymentPage.clicButton();
+        cardPaymentPage.messageUnderField("Неверный формат");
     }
 
     //вводим больше 3 цифр
     //тест успешно проходит
     @Test
-    void sendingInvalidCVCMore3Number() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        cvc.setValue("5625");
-
-        assertEquals("562", cvc.getValue());
+    void sendingInvalidCVCMore3NumberTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, "1526");
+        assertEquals("152", cardPaymentPage.getValueFild(4));
     }
 
     //вводим русский буквы
-    //тест успешно проходит
+    //тест проходит успешно
     @Test
-    void sendingInvalidCVCRU() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        cvc.setValue("ппп");
-
-        assertEquals("", cvc.getValue());
+    void sendingInvalidCVCRUTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateRU());
+        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
+        assertEquals("", cardPaymentPage.getValueFild(4));
     }
 
     //вводим буквы на латынице
     //тест успешно проходит
     @Test
-    void sendingInvalidCVCEN() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        cvc.setValue("jjp");
-
-        assertEquals("", cvc.getValue());
+    void sendingInvalidCVCENTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateStringEN(5));
+        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
+        assertEquals("", cardPaymentPage.getValueFild(4));
     }
 
     //вводим символы
     //тест успешно проходит
     @Test
-    void sendingInvalidCVCSymbols() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.generateMonth());
-        year.setValue(Integer.toString(DataHelper.generateYear2("en")));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        cvc.setValue("$$");
-
-        assertEquals("", cvc.getValue());
+    void sendingInvalidCVCSymbolsTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateSymbols());
+        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
+        assertEquals("", cardPaymentPage.getValueFild(4));
     }
 
     //вводим текущий год и месяц меньше текущего
     //тест успешно проходит
     @Test
-    void sendingInvalidMonth() {
-        numberCards.setValue(DataHelper.getCardNumberApproved());
-        month.setValue(DataHelper.getYearSysdate(-1, "MM"));
-        year.setValue(DataHelper.getYearSysdate(0, "yy"));
-        cardOwner.setValue(DataHelper.generateCardowner("en"));
-        cvc.setValue(DataHelper.generateCvc("en"));
-        button.click();
-
-        messageBelow.shouldHave(exactText("Неверно указан срок действия карты"));
+    void sendingInvalidMonthTest() {
+        var cardPaymentPage = new CardPaymentPage();
+        cardPaymentPage.inputFormInvalidCVC(1, -1, 0, DataHelper.generateCvc());
+        cardPaymentPage.clicButton();
+        cardPaymentPage.messageUnderField("Неверно указан срок действия карты");
     }
 
 }

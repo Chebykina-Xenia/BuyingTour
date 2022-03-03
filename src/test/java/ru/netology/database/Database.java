@@ -72,9 +72,9 @@ public class Database {
     @SneakyThrows
     //очищаем БД
     public static void cleanDatabase() {
-        String deleteCreditRequestEntity = "DELETE FROM credit_request_entity WHERE TRUE;";
-        String deletePaymentEntity = "DELETE FROM payment_entity WHERE TRUE;";
-        String deleteOrderEntity = "DELETE FROM order_entity WHERE TRUE;";
+        String deleteCreditRequestEntity = "DELETE FROM credit_request_entity;";
+        String deletePaymentEntity = "DELETE FROM payment_entity;";
+        String deleteOrderEntity = "DELETE FROM order_entity;";
 
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
              Statement deleteCreditRequestEntityStatment = connection.createStatement();

@@ -24,16 +24,15 @@ public class DataHelper {
         private String cvc;              //CVC/CVV
     }
 
-    //рабочая карта — операция одобрена
-    public static String getCardNumberApproved() {
-        String cardNumber1 = "1111222233334444";
-        return cardNumber1;
-    }
-
-    //рабочая карта — операция не одобрена
-    public static String getCardNumberDeclined() {
-        String cardNumber2 = "5555666677778888";
-        return cardNumber2;
+    public static String getCardNumber(int key) {
+        String cardNumber = "";
+        if (key == 1) {
+            cardNumber = "1111222233334444";  //Approved
+        }
+        if (key == 0) {
+            cardNumber = "5555666677778888";   //Declined
+        }
+        return cardNumber;
     }
 
     //генерируем месяц
@@ -43,47 +42,57 @@ public class DataHelper {
         return month[rnd];
     }
 
-    //генерируем год
-    public static String generateYear() {
-        String[] year = {"23", "24", "25", "26"};
-        int rnd = new Random().nextInt(year.length);
-        return year[rnd];
+    //генерируем строку из символов
+    public static String generateSymbols() {
+        String[] symbols = {"$%^&", "$$$", "/.", "(*("};
+        int rnd = new Random().nextInt(symbols.length);
+        return symbols[rnd];
     }
 
     //генерируем владельца
-    public static String generateCardowner(String locale) {
-        Faker faker = new Faker(new Locale(locale));
+    public static String generateCardowner() {
         String cardowner = faker.name().name();
         return cardowner;
     }
 
+    //генерируем 1 букву
+    public static String generateLetter(int length) {
+        String letter = faker.random().hex(length);
+        return letter;
+    }
+
+    //генерируем 1 букву
+    public static String generateRU() {
+        Faker faker2 = new Faker(new Locale("ru"));
+        String textRU = faker2.name().name();
+        return textRU;
+    }
+
     //генерируем cvc
-    public static String generateCvc(String locale) {
-        Faker faker = new Faker(new Locale(locale));
+    public static String generateCvc() {
         String cvc = faker.number().digits(3);
         return cvc;
     }
 
-    //генерируем cvc
-    public static int generateYear2(String locale) {
-        Faker faker = new Faker(new Locale(locale));
-        int cvc = faker.number().numberBetween(23, 26);
-        return cvc;
+    //генерируем число
+    public static String generateNumber(int numberLenght) {
+        String number = faker.number().digits(numberLenght);
+        return number;
     }
 
     public static String getYearSysdate(int numberMonth, String ofPattern) {
-        LocalDate date = LocalDate.now().plusMonths(numberMonth);
-        String year = date.format(DateTimeFormatter.ofPattern("yy"));
-        String month = date.format(DateTimeFormatter.ofPattern("MM"));
+        return LocalDate.now().plusMonths(numberMonth).format(DateTimeFormatter.ofPattern(ofPattern));
+    }
 
-        String sysdate = null;
-        if (ofPattern == "yy") {
-            sysdate = year;
+    //генерируем строку на англ
+    public static String generateStringEN(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(53);
+            sb.append(str.charAt(number));
         }
-
-        if (ofPattern == "MM") {
-            sysdate = month;
-        }
-        return sysdate;
+        return sb.toString();
     }
 }
