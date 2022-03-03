@@ -8,7 +8,7 @@
 + В открывшемся терминале вводим команду: gradlew clean test.
 + Для генерации отчёта: двойное нажатие по клавиже Ctrl — вводим команду gradlew allureReport.
 
-Документация: 
+## Документация: 
 + [План автоматизации тестирования](https://github.com/Chebykina-Xenia/BuyingTour/blob/master/docs/Plan.md)
 + [Отчёт по ручному тестированию](https://github.com/Chebykina-Xenia/BuyingTour/blob/master/docs/Report.md)
 + [Итоги автоматизированного тестирования](https://github.com/Chebykina-Xenia/BuyingTour/blob/master/docs/Summary.md)
