@@ -24,12 +24,12 @@ public class DataHelper {
         private String cvc;              //CVC/CVV
     }
 
-    public static String getCardNumber(int key) {
+    public static String getCardNumber(String status) {
         String cardNumber = "";
-        if (key == 1) {
+        if (status == "APPROVED") {
             cardNumber = "1111222233334444";  //Approved
         }
-        if (key == 0) {
+        if (status == "DECLINED") {
             cardNumber = "5555666677778888";   //Declined
         }
         return cardNumber;

@@ -12,7 +12,6 @@ import ru.netology.page.CardPaymentPage;
 import ru.netology.page.MainPage;
 
 import static com.codeborne.selenide.Selenide.open;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //тесты для проверки невалидных значений в поле CVC
 public class InvalidCVCTest {
@@ -43,9 +42,13 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidCVCEmptyTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, null);
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверный формат");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                null);
+        cardPaymentPage.checkCVCSubMessage("Неверный формат");
     }
 
     //вводим одно число
@@ -53,9 +56,13 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidCVC1NumberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateNumber(1));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверный формат");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateNumber(1));
+        cardPaymentPage.checkCVCSubMessage("Неверный формат");
     }
 
     //вводим больше 3 цифр
@@ -63,8 +70,13 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidCVCMore3NumberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, "1526");
-        assertEquals("152", cardPaymentPage.getValueFild(4));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateNumber(5));
+        cardPaymentPage.checkMessage("Успешно", "Операция одобрена Банком.");
     }
 
     //вводим русский буквы
@@ -72,9 +84,13 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidCVCRUTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateRU());
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(4));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateRU());
+        cardPaymentPage.checkCVCSubMessage("Неверный формат");
     }
 
     //вводим буквы на латынице
@@ -82,9 +98,13 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidCVCENTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateStringEN(5));
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(4));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateStringEN(5));
+        cardPaymentPage.checkCVCSubMessage("Неверный формат");
     }
 
     //вводим символы
@@ -92,9 +112,13 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidCVCSymbolsTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, 4, 5, DataHelper.generateSymbols());
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(4));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateSymbols());
+        cardPaymentPage.checkCVCSubMessage("Неверный формат");
     }
 
     //вводим текущий год и месяц меньше текущего
@@ -102,9 +126,14 @@ public class InvalidCVCTest {
     @Test
     void sendingInvalidMonthTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCVC(1, -1, 0, DataHelper.generateCvc());
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверно указан срок действия карты");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(-2, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkCVCSubMessage("Неверно указан срок действия карты");
     }
 
 }
+

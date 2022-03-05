@@ -12,7 +12,6 @@ import ru.netology.page.CardPaymentPage;
 import ru.netology.page.MainPage;
 
 import static com.codeborne.selenide.Selenide.open;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //тесты для проверки невалидных значений в поле ГОД
 public class InvalidYearTest {
@@ -43,9 +42,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearEmptyTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 2, null);
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверный формат");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                null,
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Неверный формат");
     }
 
     //вводим одну цифру
@@ -53,9 +56,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYear1NumberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 5, DataHelper.generateNumber(1));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверный формат");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.generateNumber(1),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Неверный формат");
     }
 
     //вводим год меньше текущего
@@ -63,9 +70,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearLessCurrentYearTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 5, DataHelper.getYearSysdate(-14, "yy"));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Истёк срок действия карты");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(-14, "yy"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Истёк срок действия карты");
     }
 
     //вводим год больше текущего на 5 лет
@@ -73,9 +84,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearMoreCurrentYearOn5Test() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 5, DataHelper.getYearSysdate(80, "yy"));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверно указан срок действия карты");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(80, "yy"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Неверно указан срок действия карты");
     }
 
     //вводим больше двух цифр
@@ -83,8 +98,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearMore2NumberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 4, "225");
-        assertEquals("22", cardPaymentPage.getValueFild(2));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.generateNumber(3),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessageVisible();
     }
 
     //вводим русские буквы
@@ -92,9 +112,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearRUTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 5, DataHelper.generateRU());
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(2));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.generateRU(),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Неверный формат");
     }
 
     //вводим латинские буквы
@@ -102,9 +126,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearENTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 5, DataHelper.generateStringEN(4));
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(2));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.generateStringEN(10),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Неверный формат");
     }
 
     //вводим символы
@@ -112,8 +140,13 @@ public class InvalidYearTest {
     @Test
     void sendingInvalidYearSymbolTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidYear(1, 5, DataHelper.generateRU());
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(2));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.generateSymbols(),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkYearSubMessage("Неверный формат");
     }
 }
+

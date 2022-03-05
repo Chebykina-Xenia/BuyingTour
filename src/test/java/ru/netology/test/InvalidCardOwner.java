@@ -12,7 +12,6 @@ import ru.netology.page.CardPaymentPage;
 import ru.netology.page.MainPage;
 
 import static com.codeborne.selenide.Selenide.open;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //тесты для проверки невалидных значений в поле ВЛАДЕЛЕЦ
 public class InvalidCardOwner {
@@ -43,9 +42,14 @@ public class InvalidCardOwner {
     @Test
     void sendingInvalidCardOwnerEmptyTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 4, null);
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Поле обязательно для заполнения");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                null,
+                DataHelper.generateCvc());
+        //проверяем сообщение
+        cardPaymentPage.checkCardOwnerSubMessage("Поле обязательно для заполнения");
     }
 
     //вводи в поле одну букву на латинице
@@ -53,9 +57,14 @@ public class InvalidCardOwner {
     @Test
     void sendingInvalidCardOwner1Test() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 5, DataHelper.generateStringEN(1));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Диапазон значения в поле должен быть от 2 до 40 букв");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateStringEN(1),
+                DataHelper.generateCvc());
+        //проверяем сообщение
+        cardPaymentPage.checkCardOwnerSubMessage("Диапазон значения в поле должен быть от 2 до 40 букв");
     }
 
     //вводи в поле 41 букву на латинице
@@ -63,9 +72,14 @@ public class InvalidCardOwner {
     @Test
     void sendingInvalidCardOwner41Test() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 5, DataHelper.generateStringEN(41));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Диапазон значения в поле должен быть от 2 до 40 букв");
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateStringEN(41),
+                DataHelper.generateCvc());
+        //проверяем сообщение
+        cardPaymentPage.checkCardOwnerSubMessage("Диапазон значения в поле должен быть от 2 до 40 букв");
     }
 
     //вводим русский буквы
@@ -73,8 +87,14 @@ public class InvalidCardOwner {
     @Test
     void sendingInvalidCardOwnerRUTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 4, DataHelper.generateRU());
-        assertEquals("", cardPaymentPage.getValueFild(3));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateRU(),
+                DataHelper.generateCvc());
+        //проверяем сообщение
+        cardPaymentPage.checkCardOwnerSubMessage("Неверный формат");
     }
 
     //вводим цифры
@@ -82,7 +102,14 @@ public class InvalidCardOwner {
     @Test
     void sendingInvalidCardOwnerNumberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardOwner(1, 3, 4, DataHelper.generateNumber(5));
-        assertEquals("", cardPaymentPage.getValueFild(3));
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateNumber(10),
+                DataHelper.generateCvc());
+        //проверяем сообщение
+        cardPaymentPage.checkCardOwnerSubMessage("Неверный формат");
     }
 }
+

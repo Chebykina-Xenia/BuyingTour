@@ -1,3 +1,4 @@
+
 package ru.netology.test;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
@@ -12,7 +13,6 @@ import ru.netology.page.CardPaymentPage;
 import ru.netology.page.MainPage;
 
 import static com.codeborne.selenide.Selenide.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //тесты для проверки ввода невалидных значений в поле НОМЕР КАРТЫ
 public class InvalidNumberCardsTest {
@@ -43,9 +43,12 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumberEmptyTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, null);
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверный формат");
+        cardPaymentPage.inputAndsendingForm(null,
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkCardNumberSubMessage("Неверный формат");
     }
 
     //вводим 5 цифр
@@ -53,9 +56,12 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumber5numberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, DataHelper.generateNumber(5));
-        cardPaymentPage.clicButton();
-        cardPaymentPage.messageUnderField("Неверный формат");
+        cardPaymentPage.inputAndsendingForm(DataHelper.generateNumber(5),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkCardNumberSubMessage("Неверный формат");
     }
 
     //вводим буквы на кириллице
@@ -63,9 +69,12 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumberRUTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, DataHelper.generateRU());
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(0));
+        cardPaymentPage.inputAndsendingForm(DataHelper.generateRU(),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkCardNumberSubMessage("Неверный формат");
     }
 
     //вводим буквы на латинеце
@@ -73,9 +82,12 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumberENTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, DataHelper.generateStringEN(5));
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(0));
+        cardPaymentPage.inputAndsendingForm(DataHelper.generateStringEN(5),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkCardNumberSubMessage("Неверный формат");
     }
 
     //вводим символы
@@ -83,9 +95,12 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumberSymbolsTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, DataHelper.generateSymbols());
-        //кликать на кнопку не надо, проверяем сразу данные в поле вводятся или нет
-        assertEquals("", cardPaymentPage.getValueFild(0));
+        cardPaymentPage.inputAndsendingForm(DataHelper.generateSymbols(),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkCardNumberSubMessage("Неверный формат");
     }
 
     //вводим карту, которая не заведена разработчиками
@@ -93,8 +108,11 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumberTest() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, DataHelper.generateNumber(16));
-        cardPaymentPage.clicButton();
+        cardPaymentPage.inputAndsendingForm(DataHelper.generateNumber(16),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
         cardPaymentPage.checkMessage("Ошибка", "Ошибка! Банк отказал в проведении операции.");
     }
 
@@ -103,7 +121,13 @@ public class InvalidNumberCardsTest {
     @Test
     void sendingInvalidCardNumber17Test() {
         var cardPaymentPage = new CardPaymentPage();
-        cardPaymentPage.inputFormInvalidCardNumbers(1, 4, 5, "15151212161614140");
-        assertEquals("1515 1212 1616 1414", cardPaymentPage.getValueFild(0));
+        cardPaymentPage.inputAndsendingForm(DataHelper.generateNumber(17),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
+        cardPaymentPage.checkMessage("Ошибка", "Ошибка! Банк отказал в проведении операции.");
     }
 }
+
+

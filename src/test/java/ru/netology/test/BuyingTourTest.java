@@ -3,6 +3,7 @@ package ru.netology.test;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
+import ru.netology.data.DataHelper;
 import ru.netology.database.Database;
 import ru.netology.page.CardPaymentPage;
 import ru.netology.page.MainPage;
@@ -40,7 +41,11 @@ public class BuyingTourTest {
     void sendingFormOperationApprovedTest() {
         var cardPaymentPage = new CardPaymentPage();
         //заполняем форму
-        cardPaymentPage.inputAndsendingForm(1, 5, 3);
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
         //проверяем сообщение
         cardPaymentPage.checkMessage("Успешно", "Операция одобрена Банком.");
 
@@ -61,7 +66,12 @@ public class BuyingTourTest {
     void sendingFormOperationDeclinedTest() {
         var cardPaymentPage = new CardPaymentPage();
         //заполняем форму
-        cardPaymentPage.inputAndsendingForm(0, 3, 7);
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("DECLINED"),
+                DataHelper.getYearSysdate(5, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
         //проверяем сообщения
         cardPaymentPage.checkMessage("Ошибка", "Ошибка! Банк отказал в проведении операции.");
 
@@ -77,18 +87,13 @@ public class BuyingTourTest {
     void sendingEmptyFormTest() {
         var cardPaymentPage = new CardPaymentPage();
         //кликаем по кнопке продолжить
-        cardPaymentPage.clicButton();
+        cardPaymentPage.inputAndsendingForm(null, null, null, null, null);
         //проверка сообщений под полями
-        //поле номер карты
-        cardPaymentPage.messageUnderFields(0, "Неверный формат");
-        //поле месяц
-        cardPaymentPage.messageUnderFields(1, "Неверный формат");
-        //поле год
-        cardPaymentPage.messageUnderFields(2, "Неверный формат");
-        //поле владелец
-        cardPaymentPage.messageUnderFields(3, "Поле обязательно для заполнения");
-        //поле cvc
-        cardPaymentPage.messageUnderFields(4, "Неверный формат");
+        cardPaymentPage.checkCardNumberSubMessage("Неверный формат");
+        cardPaymentPage.checkMonthSubMessage("Неверный формат");
+        cardPaymentPage.checkYearSubMessage("Неверный формат");
+        cardPaymentPage.checkCardOwnerSubMessage("Поле обязательно для заполнения");
+        cardPaymentPage.checkCVCSubMessage("Неверный формат");
     }
 
     //Передача данных в БД — проверка передачи суммы
@@ -97,7 +102,12 @@ public class BuyingTourTest {
     void transferringAmountDatabaseApprovedTest() {
         var cardPaymentPage = new CardPaymentPage();
         //заполняем форму
-        cardPaymentPage.inputAndsendingForm(1, 5, 3);
+        //заполняем форму
+        cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
+                DataHelper.getYearSysdate(3, "MM"),
+                DataHelper.getYearSysdate(0, "YY"),
+                DataHelper.generateCardowner(),
+                DataHelper.generateCvc());
         //проверяем сообщение
         cardPaymentPage.checkMessage("Успешно", "Операция одобрена Банком.");
 
