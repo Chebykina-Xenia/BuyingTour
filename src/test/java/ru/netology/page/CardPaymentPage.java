@@ -63,102 +63,29 @@ public class CardPaymentPage {
     }
 
     //ПРОВЕРКА СООБЩЕНИЙ ПОД ПОЛЕМ
-    public void checkCardNumberSubMessage(String expectedMessage){
+    public void checkCardNumberSubMessage(String expectedMessage) {
         cardNumberSub.shouldHave(text(expectedMessage));
     }
 
-    public void checkMonthSubMessage(String expectedMessage){
+    public void checkMonthSubMessage(String expectedMessage) {
         monthSub.shouldHave(text(expectedMessage));
     }
 
-    public void checkYearSubMessage(String expectedMessage){
+    public void checkYearSubMessage(String expectedMessage) {
         yearSub.shouldHave(text(expectedMessage));
     }
 
-
-    public void checkYearSubMessageVisible(){
+    public void checkYearSubMessageVisible() {
         yearSub.shouldBe(visible);
     }
-    public void checkCardOwnerSubMessage(String expectedMessage){
+
+    public void checkCardOwnerSubMessage(String expectedMessage) {
         cardOwnerSub.shouldHave(text(expectedMessage));
     }
 
-    public void checkCVCSubMessage(String expectedMessage){
+    public void checkCVCSubMessage(String expectedMessage) {
         cvcSub.shouldHave(text(expectedMessage));
     }
-    //ПРОВЕРКА СООБЩЕНИЙ ПОД ПОЛЕМ
-    //public void messageUnderField(String expectedMessageUnderField) {
-    //  messageBelow.shouldHave(exactText(expectedMessageUnderField));
-    //}
-
-
-
-    //ПРОВЕРКА ДАННЫХ В ПОЛЕ
-    //  public String getValueFild(int key) {
-    //    String value = null;
-    //  if (key == 0) {
-    //    value = numberCards.getValue();
-    //  }
-//        if (key == 1) {
-    //          value = month.getValue();
-    //    }
-    //  if (key == 2) {
-    //  value = year.getValue();
-    //}
-    //     if (key == 3) {
-    //       value = cardOwner.getValue();
-    // }
-//        if (key == 4) {
-    //          value = cvc.getValue();
-    //    }
-    //  return value;
-    //}
-
-    //ЗАПОЛНЕНИЕ невалидными значениями поле владелец
-    //  public void inputFormInvalidCardOwner(int key, int numberPlusMonthMonth, int numberPlusMonthYear, String nameCardOwner) {
-//        numberCards.setValue(DataHelper.getCardNumber(key));
-    //      month.setValue(DataHelper.getYearSysdate(numberPlusMonthMonth, "MM"));
-    //    year.setValue(DataHelper.getYearSysdate(numberPlusMonthYear, "yy"));
-    //       cardOwner.setValue(nameCardOwner);
-    //     cvc.setValue(DataHelper.generateCvc());
-    // }
-
-    //ЗАПОЛНЕНИЕ невалидными значениями поле CVC
-//    public void inputFormInvalidCVC(int key, int numberPlusMonthMonth, int numberPlusMonthYear, String numberCVC) {
-    //      numberCards.setValue(DataHelper.getCardNumber(key));
-    //    month.setValue(DataHelper.getYearSysdate(numberPlusMonthMonth, "MM"));
-    //  year.setValue(DataHelper.getYearSysdate(numberPlusMonthYear, "yy"));
-    //      cardOwner.setValue(DataHelper.generateCardowner());
-    //    cvc.setValue(numberCVC);
-    //}
-
-    //ЗАПОЛНЕНИЕ невалидными значениями поле месяц
-    //  public void inputFormInvalidMonth(int key, int numberPlusMonthYear, String numberMonth) {
-    //    numberCards.setValue(DataHelper.getCardNumber(key));
-    //  month.setValue(numberMonth);
-    //  year.setValue(DataHelper.getYearSysdate(numberPlusMonthYear, "yy"));
-    // cardOwner.setValue(DataHelper.generateCardowner());
-    //      cvc.setValue(DataHelper.generateCvc());
-    // }
-
-    //ЗАПОЛНЕНИЕ невалидными значениями поле номер карты
-    //  public void inputFormInvalidCardNumbers(int key, int numberPlusMonthMonth, int numberPlusMonthYear, String setCardNymbers) {
-    //      numberCards.setValue(setCardNymbers);
-    //    month.setValue(DataHelper.getYearSysdate(numberPlusMonthMonth, "MM"));
-    //   year.setValue(DataHelper.getYearSysdate(numberPlusMonthYear, "yy"));
-    // cardOwner.setValue(DataHelper.generateCardowner());
-    //     cvc.setValue(DataHelper.generateCvc());
-    //}
-
-    //ЗАПОЛНЕНИЕ невалидными значениями поле год
-//    public void inputFormInvalidYear(int key, int numberPlusMonthMonth, String numberYear) {
-    //      numberCards.setValue(DataHelper.getCardNumber(key));
-    //    month.setValue(DataHelper.getYearSysdate(numberPlusMonthMonth, "MM"));
-    //  year.setValue(numberYear);
-    //cardOwner.setValue(DataHelper.generateCardowner());
-    // cvc.setValue(DataHelper.generateCvc());
-    //}
-
 }
 
 

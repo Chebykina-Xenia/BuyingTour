@@ -35,13 +35,6 @@ public class DataHelper {
         return cardNumber;
     }
 
-    //генерируем месяц
-    public static String generateMonth() {
-        String[] month = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
-        int rnd = new Random().nextInt(month.length);
-        return month[rnd];
-    }
-
     //генерируем строку из символов
     public static String generateSymbols() {
         String[] symbols = {"$%^&", "$$$", "/.", "(*("};
@@ -53,12 +46,6 @@ public class DataHelper {
     public static String generateCardowner() {
         String cardowner = faker.name().name();
         return cardowner;
-    }
-
-    //генерируем 1 букву
-    public static String generateLetter(int length) {
-        String letter = faker.random().hex(length);
-        return letter;
     }
 
     //генерируем 1 букву

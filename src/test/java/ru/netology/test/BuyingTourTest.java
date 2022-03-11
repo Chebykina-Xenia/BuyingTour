@@ -66,7 +66,6 @@ public class BuyingTourTest {
     void sendingFormOperationDeclinedTest() {
         var cardPaymentPage = new CardPaymentPage();
         //заполняем форму
-        //заполняем форму
         cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("DECLINED"),
                 DataHelper.getYearSysdate(5, "MM"),
                 DataHelper.getYearSysdate(0, "YY"),
@@ -74,7 +73,6 @@ public class BuyingTourTest {
                 DataHelper.generateCvc());
         //проверяем сообщения
         cardPaymentPage.checkMessage("Ошибка", "Ошибка! Банк отказал в проведении операции.");
-
         //проверяем статус в БД
         var statusSQL = Database.getStatus();
         //сравниваем фактический и ожидаемый результат
@@ -102,7 +100,6 @@ public class BuyingTourTest {
     void transferringAmountDatabaseApprovedTest() {
         var cardPaymentPage = new CardPaymentPage();
         //заполняем форму
-        //заполняем форму
         cardPaymentPage.inputAndsendingForm(DataHelper.getCardNumber("APPROVED"),
                 DataHelper.getYearSysdate(3, "MM"),
                 DataHelper.getYearSysdate(0, "YY"),
@@ -110,7 +107,6 @@ public class BuyingTourTest {
                 DataHelper.generateCvc());
         //проверяем сообщение
         cardPaymentPage.checkMessage("Успешно", "Операция одобрена Банком.");
-
         //проверка суммы в БД
         var amountSQL = Database.getAmount();
         //сравниваем фактический и ожидаемый результат

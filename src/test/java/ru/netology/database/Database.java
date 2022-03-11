@@ -86,5 +86,4 @@ public class Database {
             deleteOrderEntityStatment.executeUpdate(deleteOrderEntity);
         }
     }
-
 }
